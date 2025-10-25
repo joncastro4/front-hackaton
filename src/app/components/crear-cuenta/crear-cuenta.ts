@@ -3,6 +3,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { CuentasService } from '../../services/cuentas-service';
+import { CuentaData } from '../../services/cuentas-service';
 
 @Component({
   selector: 'app-crear-cuenta',
@@ -13,7 +15,8 @@ import { ToastModule } from 'primeng/toast';
 
 export class CrearCuenta {
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cuentasService: CuentasService
   ) {}
 
   form = new FormGroup({
@@ -27,14 +30,22 @@ export class CrearCuenta {
 
   crearCuenta() {
     if (this.form.valid) {
-      const formData = {
-        type: this.form.controls.type.value,
-        nickname: this.form.controls.nickname.value,
+      const data: CuentaData = {
+        type: this.form.controls.type.value ?? "",
+        nickname: this.form.controls.nickname.value ?? "",
         customer_id: "123456789"  // Este valor debe ser obtenido del contexto de la aplicación
       }
-      console.log('Crear cuenta payload:', formData);
+      this.cuentasService.crearCuenta(data).subscribe({
+        next: (response) => {
+          this.showAlert("success", "Cuenta creada", "La cuenta ha sido creada exitosamente.");
+        },
+        error: (error) => {
+          this.showAlert("error", "Error al crear cuenta", "Hubo un problema al crear la cuenta. Intenta nuevamente.");
+        }
+      });
+      console.log('Crear cuenta payload:', data);
     } else {
-      this.showAlert("error", "Formulario invalido", "Alguno de los campos no estan llenados correctamente")
+      this.showAlert("error", "Formulario inválido", "Alguno de los campos no están llenados correctamente");
     }
   }
 }
