@@ -1,0 +1,148 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.crear-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #234D7A 0%, #1a3a5c 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.crear-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  max-width: 520px;
+  padding: 36px;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.crear-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.crear-header h1 {
+  color: #234D7A;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.crear-header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.crear-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.crear-form-group {
+  margin-bottom: 18px;
+}
+
+.crear-form-group label {
+  display: block;
+  color: #333;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.crear-form-group input,
+.crear-form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  outline: none;
+  background: #fff;
+}
+
+.crear-form-group input:focus,
+.crear-form-group select:focus {
+  border-color: #234D7A;
+  box-shadow: 0 0 0 3px rgba(35, 77, 122, 0.08);
+}
+
+.crear-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #C3453E 0%, #a03832 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(195, 69, 62, 0.3);
+}
+
+.crear-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(195, 69, 62, 0.4);
+}
+
+.crear-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.crear-link {
+  text-align: center;
+  margin-top: 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+.crear-link a {
+  color: #234D7A;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.crear-link a:hover {
+  color: #1a3a5c;
+}
+
+@media (max-width: 480px) {
+  .crear-card {
+    padding: 24px;
+  }
+  
+  .crear-header h1 {
+    font-size: 22px;
+  }
+}
+
+.crear-error-msg {
+  color: #C3453E;
+  margin-top: 8px;
+  font-size: 13px;
+}
