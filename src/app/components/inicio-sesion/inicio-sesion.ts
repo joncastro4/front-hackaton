@@ -21,7 +21,7 @@ export class InicioSesion {
   }
 
   form = new FormGroup({
-    username: new FormControl("", [Validators.email, Validators.required]),
+    username: new FormControl("", [Validators.required]),
     password: new FormControl("", [Validators.required])
   })
 
