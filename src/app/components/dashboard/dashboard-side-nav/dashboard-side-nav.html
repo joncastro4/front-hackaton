@@ -1,0 +1,35 @@
+<div
+  class="sidenav"
+  [ngClass]="isLeftSidebarCollapsed ? 'sidenav-collapsed' : ''"
+>
+  <div class="logo-container">
+    <button class="logo" (click)="toggleCollapse()">
+      <img class="logo-img" src="img/menu.png">
+    </button>
+    <div *ngIf="showText" class="logo-text delayed-fade-in">CapitalOne</div>
+  </div>
+  <div class="sidenav-nav">
+    @for (item of items; track $index) {
+       <li class="sidenav-nav-item">
+            <a class="sidenav-nav-link" [routerLink]="item.routeLink">
+                <img [src]="item.icon" class="nav-item">
+                <span *ngIf="showText" class="sidenav-link-text delayed-fade-in">{{ item.label }}</span>
+            </a>
+        </li>
+    }
+  </div>
+  <div class="sidenav-nav sidenav-nav-bottom">
+    <li class="sidenav-nav-item">
+      <a [routerLink]="'/'" class="sidenav-nav-link">
+        <img [src]="'/img/inicio.png'" class="nav-item">
+        <span *ngIf="showText" class="sidenav-link-text delayed-fade-in">Volver al inicio</span>
+      </a>
+    </li>
+    <li class="sidenav-nav-item">
+      <a (click)="logout()" class="sidenav-nav-link">
+        <img [src]="'/img/logout.png'" class="nav-item">
+        <span *ngIf="showText" class="sidenav-link-text delayed-fade-in">Cerrar sesión</span>
+      </a>
+    </li>
+  </div>
+</div>

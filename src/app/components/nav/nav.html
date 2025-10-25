@@ -1,0 +1,29 @@
+<nav class="navbar">
+    <div class="container">
+    <a routerLink="/" class="logo">
+        <span class="logo-text">TuMarca</span>
+    </a>
+
+    <button 
+        class="menu-toggle" 
+        (click)="toggleMenu()"
+        [class.active]="isMenuOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
+    <div class="nav-links" [class.active]="isMenuOpen">
+        <a routerLink="/dashboard" fragment="inicio" (click)="closeMenu()">Inicio</a>
+        
+        <div class="nav-buttons">
+        <a routerLink="/iniciar-sesion" class="btn-login" (click)="closeMenu()">
+            Iniciar Sesión
+        </a>
+        <a routerLink="/registro" class="btn-register" (click)="closeMenu()">
+            Registrarse
+        </a>
+        </div>
+    </div>
+    </div>
+</nav>

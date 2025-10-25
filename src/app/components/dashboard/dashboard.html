@@ -1,0 +1,11 @@
+<div class="dashboard">
+  <app-dashboard-side-nav
+    [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
+    (changeIsLeftSidebarCollapsed)="changeIsLeftSidebarCollapsed($event)"
+  ></app-dashboard-side-nav>
+
+  <app-dashboard-content
+    [isLeftSidebarCollapsed]="isLeftSidebarCollapsed()"
+    [screenWidth]="screenWidth()"
+  ></app-dashboard-content>
+</div>
