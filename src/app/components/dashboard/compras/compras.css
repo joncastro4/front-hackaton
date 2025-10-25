@@ -1,0 +1,61 @@
+/* Estilos base del mapa */
+#map {
+  height: 600px;
+  width: 100%;
+  position: relative;
+}
+
+/* Personalizar clusters con dinero */
+.marker-cluster {
+  background-color: rgba(110, 204, 57, 0.6);
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+}
+
+.marker-cluster div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(110, 204, 57, 0.6);
+}
+
+.marker-cluster span {
+  font-size: 12px;
+  line-height: 1;
+}
+
+/* Diferentes tamaños según el monto */
+.marker-cluster-small {
+  background-color: rgba(181, 226, 140, 0.6);
+}
+
+.marker-cluster-small div {
+  background-color: rgba(110, 204, 57, 0.6);
+}
+
+.marker-cluster-medium {
+  background-color: rgba(241, 211, 87, 0.6);
+}
+
+.marker-cluster-medium div {
+  background-color: rgba(240, 194, 12, 0.6);
+}
+
+.marker-cluster-large {
+  background-color: rgba(253, 156, 115, 0.6);
+}
+
+.marker-cluster-large div {
+  background-color: rgba(241, 128, 23, 0.6);
+}
+
+/* Hover effect */
+.marker-cluster:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
