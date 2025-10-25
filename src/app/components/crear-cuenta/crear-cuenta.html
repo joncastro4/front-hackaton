@@ -1,1 +1,41 @@
-<p>crear-cuenta works!</p>
+<div class="crear-container">
+  <div class="crear-card">
+    <div class="crear-header">
+      <h1>Crear cuenta</h1>
+      <p>Registra una nueva cuenta</p>
+    </div>
+
+    <form class="crear-form" [formGroup]="form" (ngSubmit)="crearCuenta()">
+      <div class="crear-form-group">
+        <label for="type">Tipo</label>
+        <select id="type" formControlName="type">
+          <option value="">Selecciona...</option>
+          <option value="Credit Card">Credit Card</option>
+          <option value="Savings">Savings</option>
+          <option value="Checking">Checking</option>
+        </select>
+        @if (form.controls.type.invalid && (form.controls.type.dirty || form.controls.type.touched)) {
+            <div class="crear-error-msg">
+            El tipo es requerido y debe ser válido.
+            </div>
+        }
+      </div>
+
+      <div class="crear-form-group">
+        <label for="nickname">Apodo</label>
+        <input id="nickname" placeholder="Mi tarjeta" formControlName="nickname" />
+        @if (form.controls.nickname.invalid && (form.controls.nickname.dirty || form.controls.nickname.touched)) {
+            <div class="crear-error-msg" >
+                El apodo es requerido.
+            </div>
+        }
+      </div>
+
+      <button type="submit" class="crear-btn" [disabled]="form.invalid">Crear cuenta</button>
+
+      <div class="crear-link">
+        Volver al <a [routerLink]="'/'">Inicio</a>
+      </div>
+    </form>
+  </div>
+</div>
