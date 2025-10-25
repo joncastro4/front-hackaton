@@ -38,6 +38,30 @@ interface Insight {
   styleUrl: './inicio.css'
 })
 export class InicioComponent implements OnInit {
+  filteredPurchases: any[] = [];
+  paginatedPurchases: any[] = [];
+
+  // 🔹 Paginación
+  currentPage = 1;
+  itemsPerPage = 10; // puedes ajustar el número de filas por página
+  totalPages = 1;
+
+    selectedMonth: string = '';
+  months = [
+    { value: '01', label: 'Enero' },
+    { value: '02', label: 'Febrero' },
+    { value: '03', label: 'Marzo' },
+    { value: '04', label: 'Abril' },
+    { value: '05', label: 'Mayo' },
+    { value: '06', label: 'Junio' },
+    { value: '07', label: 'Julio' },
+    { value: '08', label: 'Agosto' },
+    { value: '09', label: 'Septiembre' },
+    { value: '10', label: 'Octubre' },
+    { value: '11', label: 'Noviembre' },
+    { value: '12', label: 'Diciembre' },
+  ];
+
   private accountId = '68fa7c769683f20dd51a3eec';
   
   purchases: Purchase[] = [];
@@ -146,6 +170,8 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.filteredPurchases = this.purchases;
+    this.updatePagination();
   }
 
   async loadData() {
@@ -381,5 +407,39 @@ export class InicioComponent implements OnInit {
       month: 'short', 
       day: 'numeric' 
     });
+  }
+
+  applyMonthFilter() {
+    if (this.selectedMonth) {
+      this.filteredPurchases = this.purchases.filter(p => {
+        const month = new Date(p.purchase_date).getMonth() + 1;
+        return month === parseInt(this.selectedMonth);
+      });
+    } else {
+      this.filteredPurchases = this.purchases;
+    }
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  updatePagination() {
+    this.totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedPurchases = this.filteredPurchases.slice(startIndex, endIndex);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePagination();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePagination();
+    }
   }
 }
