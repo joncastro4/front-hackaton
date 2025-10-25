@@ -4,6 +4,7 @@ import { ToastModule } from 'primeng/toast';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MerchantService } from '../../../../services/merchant-service';
 import { MessageService } from 'primeng/api';
+import { Purchases } from '../../../../services/purchases';
 
 @Component({
   selector: 'app-argegar-compra',
@@ -17,7 +18,8 @@ export class ArgegarCompra implements OnInit {
 
   constructor(
     private merchantService: MerchantService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private purchaseService: Purchases
   ) {}
 
   form = new FormGroup({
@@ -51,7 +53,14 @@ export class ArgegarCompra implements OnInit {
         amount: this.form.controls.amount.value
       }
 
-      // API
+      this.purchaseService.postPurchase("id_cliente_nessie", formData).subscribe({
+        next: (response: any) => {
+          
+        },
+        error: (error: any) => {
+
+        }
+      })
 
     } else {
       this.showAlert("error", "Formulario invalido", "Alguno de los campos no estan llenados correctamente")

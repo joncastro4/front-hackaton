@@ -16,4 +16,8 @@ export class Purchases {
   getMerchant(merchantId: string) {
     return this.http.get(`http://api.nessieisreal.com/merchants/${merchantId}?key=${this.apiKey}`);
   }
+
+  postPurchase(accountId: string, data: any) {
+    return this.http.post(`http://api.nessieisreal.com/accounts/${accountId}/purchases?key=${this.apiKey}`, data)
+  }
 }
