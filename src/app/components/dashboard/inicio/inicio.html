@@ -180,7 +180,8 @@
             <!-- 🔹 Filtro de mes -->
             <div class="filter-bar">
                 <label for="monthFilter">Filtrar por mes:</label>
-                <select id="monthFilter" (change)="selectedMonth = ($any($event.target)?.value ?? ''); applyMonthFilter()">
+                <select id="monthFilter"
+                    (change)="selectedMonth = ($any($event.target)?.value ?? ''); applyMonthFilter()">
                     <option value="">Todos</option>
                     <option *ngFor="let m of months" [value]="m.value">{{ m.label }}</option>
                 </select>
@@ -225,9 +226,24 @@
 
             <!-- 🔹 Paginación -->
             <div class="pagination-container">
-                <button (click)="previousPage()" [disabled]="currentPage === 1">Anterior</button>
+                <button (click)="previousPage()" [disabled]="currentPage === 1">
+                    ← Anterior
+                </button>
+
+                <!-- Selector de items por página -->
+                <select [value]="itemsPerPage" (change)="changeItemsPerPage(+($any($event.target).value))">
+                    <option [value]="5">5 por página</option>
+                    <option [value]="10">10 por página</option>
+                    <option [value]="25">25 por página</option>
+                    <option [value]="50">50 por página</option>
+                </select>
+
                 <span>Página {{ currentPage }} de {{ totalPages }}</span>
-                <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+                <span class="text-muted">({{ filteredPurchases.length }} registros)</span>
+
+                <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+                    Siguiente →
+                </button>
             </div>
         </div>
 

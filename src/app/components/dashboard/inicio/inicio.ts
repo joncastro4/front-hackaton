@@ -170,53 +170,46 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
-    this.filteredPurchases = this.purchases;
-    this.updatePagination();
   }
 
   async loadData() {
-    try {
-      this.loading = true;
-      
-      // Obtener compras
-      const purchasesData: any = await this.purchasesService
-        .getPurchases(this.accountId)
-        .toPromise();
-      
-      // Mostrar TODAS las compras
-      this.purchases = purchasesData;
-      
-      // Obtener merchants únicos
-      const merchantIds = [...new Set(this.purchases.map(p => p.merchant_id))];
-      
-      // Obtener información de cada merchant
-      for (const merchantId of merchantIds) {
-        try {
-          const merchantData: any = await this.purchasesService
-            .getMerchant(merchantId)
-            .toPromise();
-          this.merchants[merchantId] = merchantData.name || `Merchant ${merchantId.slice(-4)}`;
-        } catch (err) {
-          this.merchants[merchantId] = `Merchant ${merchantId.slice(-4)}`;
-        }
+  try {
+    this.loading = true;
+    
+    const purchasesData: any = await this.purchasesService
+      .getPurchases(this.accountId)
+      .toPromise();
+    
+    this.purchases = purchasesData;
+    
+    const merchantIds = [...new Set(this.purchases.map(p => p.merchant_id))];
+    
+    for (const merchantId of merchantIds) {
+      try {
+        const merchantData: any = await this.purchasesService
+          .getMerchant(merchantId)
+          .toPromise();
+        this.merchants[merchantId] = merchantData.name || `Merchant ${merchantId.slice(-4)}`;
+      } catch (err) {
+        this.merchants[merchantId] = `Merchant ${merchantId.slice(-4)}`;
       }
-
-      // Calcular estadísticas
-      this.calculateStats();
-      
-      // Generar insights
-      this.generateInsights();
-      
-      // Preparar datos para gráficas
-      this.prepareChartData();
-      
-      this.loading = false;
-    } catch (err) {
-      this.error = 'Error al cargar los datos';
-      this.loading = false;
-      console.error('Error general:', err);
     }
+
+    this.calculateStats();
+    this.generateInsights();
+    this.prepareChartData();
+    
+    // ✅ Agregar estas líneas DESPUÉS de cargar los datos
+    this.filteredPurchases = this.purchases;
+    this.updatePagination();
+    
+    this.loading = false;
+  } catch (err) {
+    this.error = 'Error al cargar los datos';
+    this.loading = false;
+    console.error('Error general:', err);
   }
+}
 
   calculateStats() {
     this.totalTransactions = this.purchases.length;
@@ -423,23 +416,52 @@ export class InicioComponent implements OnInit {
   }
 
   updatePagination() {
-    this.totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedPurchases = this.filteredPurchases.slice(startIndex, endIndex);
+  if (this.filteredPurchases.length === 0) {
+    this.totalPages = 1;
+    this.paginatedPurchases = [];
+    return;
   }
+  
+  this.totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
+  
+  // Asegurar que currentPage no sea mayor que totalPages
+  if (this.currentPage > this.totalPages) {
+    this.currentPage = this.totalPages;
+  }
+  
+  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+  const endIndex = startIndex + this.itemsPerPage;
+  this.paginatedPurchases = this.filteredPurchases.slice(startIndex, endIndex);
+}
 
   nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePagination();
-    }
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+    this.updatePagination();
+    // Opcional: scroll al inicio de la tabla
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+}
 
   previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePagination();
-    }
+  if (this.currentPage > 1) {
+    this.currentPage--;
+    this.updatePagination();
+    // Opcional: scroll al inicio de la tabla
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+}
+
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    this.updatePagination();
+  }
+}
+
+changeItemsPerPage(items: number) {
+  this.itemsPerPage = items;
+  this.currentPage = 1;
+  this.updatePagination();
+}
 }
