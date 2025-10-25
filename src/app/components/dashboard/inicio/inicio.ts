@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
@@ -23,6 +23,13 @@ interface Merchant {
   category?: string[];
 }
 
+interface Insight {
+  icon: string;
+  title: string;
+  description: string;
+  type: 'info' | 'warning' | 'success' | 'primary';
+}
+
 @Component({
   selector: 'app-inicio',
   standalone: true,
@@ -31,7 +38,6 @@ interface Merchant {
   styleUrl: './inicio.css'
 })
 export class InicioComponent implements OnInit {
-
   private accountId = '68fa7c769683f20dd51a3eec';
   
   purchases: Purchase[] = [];
@@ -43,6 +49,13 @@ export class InicioComponent implements OnInit {
   totalAmount = 0;
   totalTransactions = 0;
   averageAmount = 0;
+  medianAmount = 0;
+  maxAmount = 0;
+  minAmount = 0;
+  stdDeviation = 0;
+
+  // Insights
+  insights: Insight[] = [];
 
   // Configuración de gráficas
   public barChartType: ChartType = 'bar';
@@ -70,7 +83,7 @@ export class InicioComponent implements OnInit {
         beginAtZero: true,
         ticks: {
           callback: function(value) {
-            return '$' + value;
+            return '$' + value.toLocaleString();
           }
         }
       }
@@ -92,12 +105,14 @@ export class InicioComponent implements OnInit {
         callbacks: {
           label: function(context) {
             let label = context.label || '';
+            const value = context.parsed as number;
+            const total = (context.dataset.data as number[]).reduce((a, b) => a + b, 0);
+            const percentage = ((value / total) * 100).toFixed(1);
+            
             if (label) {
               label += ': ';
             }
-            if (context.parsed !== null) {
-              label += '$' + context.parsed.toFixed(2);
-            }
+            label += '$' + value.toLocaleString() + ' (' + percentage + '%)';
             return label;
           }
         }
@@ -120,22 +135,20 @@ export class InicioComponent implements OnInit {
         beginAtZero: true,
         ticks: {
           callback: function(value) {
-            return '$' + value;
+            return '$' + value.toLocaleString();
           }
         }
       }
     }
   };
 
-  constructor(private purchasesService: Purchases) {}
+  constructor(@Inject(Purchases) private purchasesService: Purchases) {}
 
   ngOnInit() {
-    console.log('🔵 Componente Inicio iniciado');
     this.loadData();
   }
 
   async loadData() {
-    console.log('🟢 LoadData ejecutándose...');
     try {
       this.loading = true;
       
@@ -144,34 +157,29 @@ export class InicioComponent implements OnInit {
         .getPurchases(this.accountId)
         .toPromise();
       
-      // Mostrar TODAS las compras (no filtrar canceladas)
+      // Mostrar TODAS las compras
       this.purchases = purchasesData;
-      
-      console.log('Total de compras:', this.purchases.length);
       
       // Obtener merchants únicos
       const merchantIds = [...new Set(this.purchases.map(p => p.merchant_id))];
-      console.log('Merchant IDs únicos:', merchantIds);
       
       // Obtener información de cada merchant
       for (const merchantId of merchantIds) {
-        console.log('Obteniendo merchant:', merchantId);
         try {
           const merchantData: any = await this.purchasesService
             .getMerchant(merchantId)
             .toPromise();
-          console.log('Merchant data recibida:', merchantData);
           this.merchants[merchantId] = merchantData.name || `Merchant ${merchantId.slice(-4)}`;
         } catch (err) {
-          console.error(`Error obteniendo merchant ${merchantId}:`, err);
           this.merchants[merchantId] = `Merchant ${merchantId.slice(-4)}`;
         }
       }
 
-      console.log('Merchants cargados:', this.merchants);
-
       // Calcular estadísticas
       this.calculateStats();
+      
+      // Generar insights
+      this.generateInsights();
       
       // Preparar datos para gráficas
       this.prepareChartData();
@@ -190,80 +198,188 @@ export class InicioComponent implements OnInit {
     this.averageAmount = this.totalTransactions > 0 
       ? this.totalAmount / this.totalTransactions 
       : 0;
+
+    // Calcular mediana
+    const sortedAmounts = this.purchases.map(p => p.amount).sort((a, b) => a - b);
+    const mid = Math.floor(sortedAmounts.length / 2);
+    this.medianAmount = sortedAmounts.length % 2 === 0
+      ? (sortedAmounts[mid - 1] + sortedAmounts[mid]) / 2
+      : sortedAmounts[mid];
+
+    // Max y Min
+    this.maxAmount = Math.max(...sortedAmounts);
+    this.minAmount = Math.min(...sortedAmounts);
+
+    // Desviación estándar
+    const squaredDiffs = this.purchases.map(p => Math.pow(p.amount - this.averageAmount, 2));
+    const avgSquaredDiff = squaredDiffs.reduce((sum, val) => sum + val, 0) / this.totalTransactions;
+    this.stdDeviation = Math.sqrt(avgSquaredDiff);
   }
 
- prepareChartData() {
-  // Bar Chart Data
-  const merchantTotals: { [key: string]: number } = {};
-  this.purchases.forEach(p => {
-    const merchantName = this.merchants[p.merchant_id] || 'Desconocido';
-    merchantTotals[merchantName] = (merchantTotals[merchantName] || 0) + p.amount;
-  });
+  generateInsights() {
+    this.insights = [];
 
-  console.log('Totales por merchant:', merchantTotals);
+    // Merchant más frecuente
+    const merchantCounts: { [key: string]: number } = {};
+    this.purchases.forEach(p => {
+      const merchantName = this.merchants[p.merchant_id];
+      merchantCounts[merchantName] = (merchantCounts[merchantName] || 0) + 1;
+    });
+    const mostFrequent = Object.entries(merchantCounts).sort(([,a], [,b]) => b - a)[0];
+    
+    this.insights.push({
+      icon: '🏆',
+      title: 'Merchant Más Frecuente',
+      description: `Realizaste ${mostFrequent[1]} compras en ${mostFrequent[0]}`,
+      type: 'primary'
+    });
 
-  // Ordenar merchants por monto (de mayor a menor)
-  const sortedMerchants = Object.entries(merchantTotals)
-    .sort(([, a], [, b]) => b - a);
+    // Merchant con mayor gasto
+    const merchantTotals: { [key: string]: number } = {};
+    this.purchases.forEach(p => {
+      const merchantName = this.merchants[p.merchant_id];
+      merchantTotals[merchantName] = (merchantTotals[merchantName] || 0) + p.amount;
+    });
+    const biggestSpender = Object.entries(merchantTotals).sort(([,a], [,b]) => b - a)[0];
+    const percentage = ((biggestSpender[1] / this.totalAmount) * 100).toFixed(1);
+    
+    this.insights.push({
+      icon: '💰',
+      title: 'Mayor Gasto',
+      description: `${biggestSpender[0]} representa el ${percentage}% de tus gastos totales ($${biggestSpender[1].toLocaleString()})`,
+      type: 'info'
+    });
 
-  this.barChartData = {
-    labels: sortedMerchants.map(([name]) => name),
-    datasets: [{
-      data: sortedMerchants.map(([, total]) => total),
-      label: 'Monto Gastado',
-      backgroundColor: [
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(16, 185, 129, 0.8)',
-        'rgba(245, 158, 11, 0.8)',
-        'rgba(239, 68, 68, 0.8)',
-        'rgba(139, 92, 246, 0.8)'
-      ],
-      borderColor: [
-        'rgba(59, 130, 246, 1)',
-        'rgba(16, 185, 129, 1)',
-        'rgba(245, 158, 11, 1)',
-        'rgba(239, 68, 68, 1)',
-        'rgba(139, 92, 246, 1)'
-      ],
-      borderWidth: 1
-    }]
-  };
+    // Ticket promedio más alto
+    const merchantAvgs: { [key: string]: number } = {};
+    Object.keys(merchantTotals).forEach(merchant => {
+      const count = merchantCounts[merchant];
+      merchantAvgs[merchant] = merchantTotals[merchant] / count;
+    });
+    const highestAvg = Object.entries(merchantAvgs).sort(([,a], [,b]) => b - a)[0];
+    
+    this.insights.push({
+      icon: '📊',
+      title: 'Ticket Promedio Más Alto',
+      description: `${highestAvg[0]} tiene un ticket promedio de $${highestAvg[1].toLocaleString()}`,
+      type: 'success'
+    });
 
-  // Pie Chart Data
-  this.pieChartData = {
-    labels: sortedMerchants.map(([name]) => name),
-    datasets: [{
-      data: sortedMerchants.map(([, total]) => total),
-      backgroundColor: [
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(16, 185, 129, 0.8)',
-        'rgba(245, 158, 11, 0.8)',
-        'rgba(239, 68, 68, 0.8)',
-        'rgba(139, 92, 246, 0.8)'
-      ]
-    }]
-  };
+    // Alerta de compra máxima
+    const maxPurchase = this.purchases.reduce((max, p) => p.amount > max.amount ? p : max);
+    const maxMerchant = this.merchants[maxPurchase.merchant_id];
+    
+    this.insights.push({
+      icon: '⚠️',
+      title: 'Compra Más Grande',
+      description: `Tu mayor compra fue de $${maxPurchase.amount.toLocaleString()} en ${maxMerchant}`,
+      type: 'warning'
+    });
 
-  // Line Chart Data
-  const dateGroups: { [key: string]: number } = {};
-  this.purchases.forEach(p => {
-    dateGroups[p.purchase_date] = (dateGroups[p.purchase_date] || 0) + p.amount;
-  });
+    // Diversificación
+    const uniqueMerchants = Object.keys(merchantTotals).length;
+    this.insights.push({
+      icon: '🎯',
+      title: 'Diversificación',
+      description: `Realizaste compras en ${uniqueMerchants} comercios diferentes`,
+      type: 'info'
+    });
 
-  const sortedDates = Object.keys(dateGroups).sort();
-  
-  this.lineChartData = {
-    labels: sortedDates,
-    datasets: [{
-      data: sortedDates.map(date => dateGroups[date]),
-      label: 'Monto',
-      fill: false,
-      borderColor: 'rgba(245, 158, 11, 1)',
-      backgroundColor: 'rgba(245, 158, 11, 0.8)',
-      tension: 0.4,
-      pointRadius: 5,
-      pointHoverRadius: 7
-    }]
-  };
-}
+    // Análisis de fechas
+    const dates = this.purchases.map(p => p.purchase_date);
+    const uniqueDates = [...new Set(dates)];
+    const avgPerDay = this.totalAmount / uniqueDates.length;
+    
+    this.insights.push({
+      icon: '📅',
+      title: 'Promedio Diario',
+      description: `Gastas en promedio $${avgPerDay.toLocaleString()} por día activo`,
+      type: 'primary'
+    });
+  }
+
+  prepareChartData() {
+    // Bar Chart Data
+    const merchantTotals: { [key: string]: number } = {};
+    this.purchases.forEach(p => {
+      const merchantName = this.merchants[p.merchant_id] || 'Desconocido';
+      merchantTotals[merchantName] = (merchantTotals[merchantName] || 0) + p.amount;
+    });
+
+    const sortedMerchants = Object.entries(merchantTotals)
+      .sort(([, a], [, b]) => b - a);
+
+    this.barChartData = {
+      labels: sortedMerchants.map(([name]) => name),
+      datasets: [{
+        data: sortedMerchants.map(([, total]) => total),
+        label: 'Monto Gastado',
+        backgroundColor: [
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(16, 185, 129, 0.8)',
+          'rgba(245, 158, 11, 0.8)',
+          'rgba(239, 68, 68, 0.8)',
+          'rgba(139, 92, 246, 0.8)'
+        ],
+        borderColor: [
+          'rgba(59, 130, 246, 1)',
+          'rgba(16, 185, 129, 1)',
+          'rgba(245, 158, 11, 1)',
+          'rgba(239, 68, 68, 1)',
+          'rgba(139, 92, 246, 1)'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    // Pie Chart Data
+    this.pieChartData = {
+      labels: sortedMerchants.map(([name]) => name),
+      datasets: [{
+        data: sortedMerchants.map(([, total]) => total),
+        backgroundColor: [
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(16, 185, 129, 0.8)',
+          'rgba(245, 158, 11, 0.8)',
+          'rgba(239, 68, 68, 0.8)',
+          'rgba(139, 92, 246, 0.8)'
+        ]
+      }]
+    };
+
+    // Line Chart Data
+    const dateGroups: { [key: string]: number } = {};
+    this.purchases.forEach(p => {
+      dateGroups[p.purchase_date] = (dateGroups[p.purchase_date] || 0) + p.amount;
+    });
+
+    const sortedDates = Object.keys(dateGroups).sort();
+    
+    this.lineChartData = {
+      labels: sortedDates,
+      datasets: [{
+        data: sortedDates.map(date => dateGroups[date]),
+        label: 'Monto',
+        fill: false,
+        borderColor: 'rgba(245, 158, 11, 1)',
+        backgroundColor: 'rgba(245, 158, 11, 0.8)',
+        tension: 0.4,
+        pointRadius: 5,
+        pointHoverRadius: 7
+      }]
+    };
+  }
+
+  getMerchantName(merchantId: string): string {
+    return this.merchants[merchantId] || 'Desconocido';
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-MX', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
 }

@@ -21,15 +21,15 @@ export class InicioSesion {
   }
 
   form = new FormGroup({
-    correo: new FormControl("", [Validators.email, Validators.required]),
-    contrasena: new FormControl("", [Validators.required])
+    username: new FormControl("", [Validators.email, Validators.required]),
+    password: new FormControl("", [Validators.required])
   })
 
   iniciarSesion() {
     if (this.form.valid) {
       const formData = {
-        correo: this.form.controls.correo.value,
-        contrasena: this.form.controls.contrasena.value
+        username: this.form.controls.username.value,
+        password: this.form.controls.password.value
       }
 
       // ENVIAR EL REQUEST AL INICIO DE SESION EN EL API
