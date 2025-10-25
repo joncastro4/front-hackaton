@@ -2,7 +2,7 @@
   <div class="crear-card">
     <div class="crear-header">
       <h1>Crear cuenta</h1>
-      <p>Registra una nueva cuenta de tarjeta</p>
+      <p>Registra una nueva cuenta</p>
     </div>
 
     <form class="crear-form" [formGroup]="form" (ngSubmit)="crearCuenta()">
@@ -31,51 +31,8 @@
         }
       </div>
 
-      <div class="crear-form-group">
-        <label for="rewards">Recompensas</label>
-        <input id="rewards" type="number" min="0" placeholder="0" formControlName="rewards" />
-        @if (form.controls.rewards.invalid && (form.controls.rewards.dirty || form.controls.rewards.touched)) {
-            <div class="crear-error-msg">
-            Valor de recompensas inválido.
-            </div>
-        }
-      </div>
-
-      <div class="crear-form-group">
-        <label for="balance">Balance</label>
-        <input id="balance" type="number" min="0" step="0.01" placeholder="0.00" formControlName="balance" />
-        @if (form.controls.balance.invalid && (form.controls.balance.dirty || form.controls.balance.touched)) {
-            <div class="crear-error-msg">
-            Balance inválido.
-            </div>
-        }
-      </div>
-
-      <div class="crear-form-group">
-        <label for="account_number">Número de cuenta</label>
-        <input id="account_number" placeholder="1234-5678-..." formControlName="account_number" />
-        @if (form.controls.account_number.invalid && (form.controls.account_number.dirty || form.controls.account_number.touched)) {
-            <div class="crear-error-msg">
-            El número de cuenta es requerido.
-            </div>
-        }
-      </div>
-
-      <div class="crear-form-group">
-        <label for="customer_id">ID del cliente</label>
-        <input id="customer_id" placeholder="ID del cliente" formControlName="customer_id" />
-        @if (form.controls.customer_id.invalid && (form.controls.customer_id.dirty || form.controls.customer_id.touched)) {
-            <div class="crear-error-msg">
-            El ID del cliente es requerido.
-            </div>
-        }
-      </div>
-
       <button type="submit" class="crear-btn" [disabled]="form.invalid">Crear cuenta</button>
 
-      <div class="crear-link">
-        ¿Ya tienes cuenta? <a [routerLink]="'/iniciar-sesion'">Iniciar sesión</a>
-      </div>
       <div class="crear-link">
         Volver al <a [routerLink]="'/'">Inicio</a>
       </div>
