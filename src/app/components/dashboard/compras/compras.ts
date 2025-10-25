@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet'
 import 'leaflet.markercluster'
 import { icon, Marker } from 'leaflet';
+import { SectionHeader } from "../section-header/section-header";
 
 // Interface para tus ubicaciones con datos de dinero
 interface LocationWithMoney {
@@ -13,7 +14,7 @@ interface LocationWithMoney {
 
 @Component({
   selector: 'app-compras',
-  imports: [],
+  imports: [SectionHeader],
   templateUrl: './compras.html',
   styleUrl: './compras.css',
 })

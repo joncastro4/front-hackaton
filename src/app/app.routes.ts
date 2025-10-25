@@ -6,6 +6,7 @@ import { Dashboard } from './components/dashboard/dashboard';
 import { Inicio } from './components/dashboard/inicio/inicio';
 import { Compras } from './components/dashboard/compras/compras';
 import { CrearCuenta } from './components/crear-cuenta/crear-cuenta';
+import { ArgegarCompra } from './components/dashboard/compras/argegar-compra/argegar-compra';
 
 export const routes: Routes = [
     { path: "", component: Landing },
@@ -14,6 +15,7 @@ export const routes: Routes = [
     { path: "crear-cuenta", component: CrearCuenta },
     { path: "dashboard", component: Dashboard, children: [
         { path: "inicio", component: Inicio },
-        { path: "compras", component: Compras }
+        { path: "compras", component: Compras },
+        {path: "agregar-compra", component: ArgegarCompra }
     ]}
 ];

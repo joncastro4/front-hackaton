@@ -1,0 +1,251 @@
+<app-section-header
+    [title]="'Agregar compra'"
+    [route]="'/dashboard/compras'"
+    [imgRoute]="'img/regresar.png'"
+></app-section-header>
+
+<div class="form-container">
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="agregarCompra()">
+      <div class="form-group">
+        <label for="mercader">Mercader</label>
+        <select id="mercader" formControlName="merchant_id" required>
+          <option value="" disabled selected>Selecciona un mercader</option>
+          @for (mercader of mercaderes; track $index) {
+            <option [value]="mercader._id">{{ mercader.name }}</option>
+          }
+        </select>
+        @if (this.form.controls.merchant_id.dirty && this.form.controls.merchant_id.touched && this.form.controls.merchant_id.invalid) {
+            <div class="error-msg">
+                El mercader es requerido.
+            </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="tipo">Metodo de pago</label>
+        <select id="tipo" formControlName="medium" required>
+          <option value="" disabled selected>Selecciona tipo</option>
+          <option value="balance">Balance</option>
+          <option value="rewards">Rewards</option>
+        </select>
+        @if (this.form.controls.medium.dirty && this.form.controls.medium.touched && this.form.controls.medium.invalid) {
+            <div class="error-msg">
+                El metodo de pago es requerido.
+            </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha</label>
+        <input 
+        type="date"
+          formControlName="purchase_date"
+        />
+        @if (this.form.controls.purchase_date.dirty && this.form.controls.purchase_date.touched && this.form.controls.purchase_date.invalid) {
+            <div class="error-msg">
+                La fecha de pago es requerida.
+            </div>
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="monto">Monto</label>
+        <input 
+          formControlName="amount"
+          placeholder="0.00"
+          min="0.01"
+          step="0.01"
+        />
+        @if (this.form.controls.amount.dirty && this.form.controls.amount.touched && this.form.controls.amount.invalid) {
+            <div class="error-msg">
+                El monto es requerido y mayor a 0.
+            </div>
+        }
+      </div>
+
+      <button type="submit" class="btn-submit">Agregar compra</button>
+    </form>
+  </div>
+</div>
+
+<p-toast position="bottom-right" key="br" />
+
+<!-- CSS Styles -->
+<style>
+.form-container {
+  min-height: calc(100vh - 120px);
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.form-card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  color: #234D7A;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: all 0.3s ease;
+  outline: none;
+  background-color: white;
+  color: #333;
+}
+
+.form-group select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23234D7A' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+.form-group input[type="date"] {
+  cursor: pointer;
+}
+
+.form-group input[type="number"] {
+  font-variant-numeric: tabular-nums;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #234D7A;
+  box-shadow: 0 0 0 3px rgba(35, 77, 122, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #999;
+}
+
+/* Estilos para select cuando está deshabilitado o tiene valor por defecto */
+.form-group select:invalid {
+  color: #999;
+}
+
+.form-group select option {
+  color: #333;
+}
+
+.form-group select option:first-child {
+  color: #999;
+}
+
+/* Estilos para inputs de número - ocultar flechas en algunos navegadores */
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #C3453E 0%, #a03832 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(195, 69, 62, 0.3);
+  margin-top: 8px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(195, 69, 62, 0.4);
+}
+
+.btn-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Estilos para validación */
+.form-group input.ng-invalid.ng-touched,
+.form-group select.ng-invalid.ng-touched {
+  border-color: #C3453E;
+}
+
+.form-group input.ng-valid.ng-touched,
+.form-group select.ng-valid.ng-touched {
+  border-color: #4CAF50;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-card {
+    padding: 30px 24px;
+  }
+
+  .form-container {
+    padding: 20px 16px;
+  }
+}
+
+/* Estilos específicos para el date input en diferentes navegadores */
+.form-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.form-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+</style>

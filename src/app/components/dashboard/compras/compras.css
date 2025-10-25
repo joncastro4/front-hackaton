@@ -1,9 +1,17 @@
-/* Estilos base del mapa */
+/* Asegura que el contenedor tenga el espacio correcto */
+.map-container {
+  width: 100%;
+  padding: 20px;
+}
+
 #map {
   height: 600px;
   width: 100%;
   position: relative;
+  z-index: 1;
 }
+
+/* El resto de tus estilos de clusters... */
 
 /* Personalizar clusters con dinero */
 .marker-cluster {
