@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { CuentasService } from '../../services/cuentas-service';
 
 @Component({
   selector: 'app-crear-cuenta',
@@ -13,7 +14,8 @@ import { ToastModule } from 'primeng/toast';
 
 export class CrearCuenta {
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cuentasService: CuentasService
   ) {}
 
   form = new FormGroup({
@@ -27,6 +29,14 @@ export class CrearCuenta {
 
   crearCuenta() {
     if (this.form.valid) {
+      this.cuentasService.crearCuenta({}).subscribe({
+        next: (response) => {
+          this.showAlert("success", "Cuenta creada", "La cuenta ha sido creada exitosamente.");
+        },
+        error: (error) => {
+          this.showAlert("error", "Error", "Hubo un problema al crear la cuenta.");
+        }
+      });
       const formData = {
         type: this.form.controls.type.value,
         nickname: this.form.controls.nickname.value,
