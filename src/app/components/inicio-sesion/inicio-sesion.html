@@ -1,1 +1,47 @@
-<p>inicio-sesion works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Bienvenido</h1>
+      <p>Inicia sesión en tu cuenta</p>
+    </div>
+    
+    <form class="login-form" [formGroup]="form" (ngSubmit)="iniciarSesion()">
+      <div class="form-group">
+        <label for="email">Correo electrónico</label>
+        <input 
+          placeholder="tu@email.com"
+          formControlName="correo"
+        />
+        @if (form.controls.correo.invalid && form.controls.correo.dirty && form.controls.correo.touched) {
+          <div class="error-msg">
+            El correo es requerido o esta en el formato incorrecto.
+          </div>
+        }
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          placeholder="••••••••"
+          formControlName="contrasena"
+        />
+        @if (form.controls.contrasena.invalid && form.controls.contrasena.dirty && form.controls.contrasena.touched) {
+          <div class="error-msg">
+            La contraseña es requerida.
+          </div>
+        }
+      </div>
+      
+      <button type="submit" class="btn-login">Iniciar sesión</button>
+      
+      <div class="signup-link">
+        ¿No tienes cuenta? <a [routerLink]="'/registro'">Regístrate</a>
+      </div>
+      <div class="signup-link">
+        Volver al <a [routerLink]="'/'">Inicio</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<p-toast position="bottom-right" key="br" />
