@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CuentasService } from '../../services/cuentas-service';
+import { CuentaData } from '../../services/cuentas-service';
 
 @Component({
   selector: 'app-crear-cuenta',
@@ -29,22 +30,22 @@ export class CrearCuenta {
 
   crearCuenta() {
     if (this.form.valid) {
-      this.cuentasService.crearCuenta({}).subscribe({
+      const data: CuentaData = {
+        type: this.form.controls.type.value ?? "",
+        nickname: this.form.controls.nickname.value ?? "",
+        customer_id: "123456789"  // Este valor debe ser obtenido del contexto de la aplicación
+      }
+      this.cuentasService.crearCuenta(data).subscribe({
         next: (response) => {
           this.showAlert("success", "Cuenta creada", "La cuenta ha sido creada exitosamente.");
         },
         error: (error) => {
-          this.showAlert("error", "Error", "Hubo un problema al crear la cuenta.");
+          this.showAlert("error", "Error al crear cuenta", "Hubo un problema al crear la cuenta. Intenta nuevamente.");
         }
       });
-      const formData = {
-        type: this.form.controls.type.value,
-        nickname: this.form.controls.nickname.value,
-        customer_id: "123456789"  // Este valor debe ser obtenido del contexto de la aplicación
-      }
-      console.log('Crear cuenta payload:', formData);
+      console.log('Crear cuenta payload:', data);
     } else {
-      this.showAlert("error", "Formulario invalido", "Alguno de los campos no estan llenados correctamente")
+      this.showAlert("error", "Formulario inválido", "Alguno de los campos no están llenados correctamente");
     }
   }
 }
