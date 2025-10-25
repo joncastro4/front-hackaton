@@ -7,14 +7,14 @@
     
     <form class="login-form" [formGroup]="form" (ngSubmit)="iniciarSesion()">
       <div class="form-group">
-        <label for="email">Correo electrónico</label>
+        <label for="email">Nombre de usuario</label>
         <input 
-          placeholder="tu@email.com"
-          formControlName="correo"
+          placeholder="Usuario"
+          formControlName="username"
         />
-        @if (form.controls.correo.invalid && form.controls.correo.dirty && form.controls.correo.touched) {
+        @if (form.controls.username.invalid && form.controls.username.dirty && form.controls.username.touched) {
           <div class="error-msg">
-            El correo es requerido o esta en el formato incorrecto.
+            El nombre de usuario es requerido.
           </div>
         }
       </div>
@@ -23,9 +23,9 @@
         <label for="password">Contraseña</label>
         <input 
           placeholder="••••••••"
-          formControlName="contrasena"
+          formControlName="password"
         />
-        @if (form.controls.contrasena.invalid && form.controls.contrasena.dirty && form.controls.contrasena.touched) {
+        @if (form.controls.password.invalid && form.controls.password.dirty && form.controls.password.touched) {
           <div class="error-msg">
             La contraseña es requerida.
           </div>
