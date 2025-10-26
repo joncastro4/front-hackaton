@@ -33,6 +33,14 @@ export class AuthService {
     this.cookies.set('token', token, 7, '/');
   }
 
+  setCustomerID(id: string) {
+    this.cookies.set('customer_id', id, 7, '/');
+  }
+
+  getCustomerID() {
+    return this.cookies.get('customer_id')
+  }
+
   getUserNessieID(token: string) {
     return this.http.get(`${BASE_URL}/me`)
   }

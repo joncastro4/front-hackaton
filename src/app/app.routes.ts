@@ -20,5 +20,6 @@ export const routes: Routes = [
         { path: "compras", component: Compras, canActivate: [authGuard] },
         {path: "agregar-compra", component: ArgegarCompra, canActivate: [authGuard] }
     ],
-    }
+    },
+    {path: "**", redirectTo: ""}
 ];

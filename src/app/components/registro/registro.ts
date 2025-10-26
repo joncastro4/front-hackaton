@@ -58,6 +58,7 @@ export class Registro {
       this.authService.register(formData).subscribe({
         next: (response: any) => {
           let token = response.token
+          this.authService.setCustomerID(response.user.id)
           this.authService.setLocalToken(token)
           this.showAlert("success", "Sesión iniciada", "Redireccionando al panel de cuenta.")
           setTimeout(() => {
