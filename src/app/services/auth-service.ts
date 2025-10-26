@@ -42,14 +42,19 @@ export class AuthService {
   }
 
   getUserNessieID(token: string) {
-    return this.http.get(`${BASE_URL}/me`)
+    console.log("Obteniendo Nessie ID con token:", token);
+    return this.http.get(`${BASE_URL}/nessie-id`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
   }
 
   isAuthenticated(): boolean {
     const token = this.getToken();
     console.log("Token en auth service:", token);
     console.log("Token length:", token.length);
-    if (token.length > 1) {
+    if (token.length > 10) {
       return true;
     }
     return false;

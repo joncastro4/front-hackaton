@@ -14,7 +14,7 @@ export const routes: Routes = [
     { path: "", component: Landing },
     { path: "iniciar-sesion", component: InicioSesion, canActivate: [logInGuard] },
     { path: "registro", component: Registro, canActivate: [logInGuard] },
-    { path: "crear-cuenta", component: CrearCuenta, canActivate: [logInGuard] },
+    { path: "crear-cuenta", component: CrearCuenta },
     { path: "dashboard", component: Dashboard, children: [
         { path: "", component: InicioComponent, canActivate: [authGuard] },
         { path: "compras", component: Compras, canActivate: [authGuard] },

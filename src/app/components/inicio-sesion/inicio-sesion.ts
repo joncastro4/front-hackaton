@@ -38,6 +38,7 @@ export class InicioSesion {
       this.authService.login(formData).subscribe({
         next: (response: any) => {
           let token = response.token
+          console.log("Token recibido:", token)
           this.authService.setLocalToken(token)
           this.showAlert("success", "Registro exitoso", "Ahora podra registrar cuentas bancarias.")
           setTimeout(() => {

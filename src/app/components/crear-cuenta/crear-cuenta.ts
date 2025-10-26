@@ -5,6 +5,7 @@ import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { CuentasService } from '../../services/cuentas-service';
 import { CuentaData } from '../../services/cuentas-service';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-crear-cuenta',
@@ -16,7 +17,8 @@ import { CuentaData } from '../../services/cuentas-service';
 export class CrearCuenta {
   constructor(
     private messageService: MessageService,
-    private cuentasService: CuentasService
+    private cuentasService: CuentasService,
+    private authService: AuthService,
   ) {}
 
   form = new FormGroup({
