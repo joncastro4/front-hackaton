@@ -416,30 +416,29 @@ export class InicioComponent implements OnInit {
   }
 
   updatePagination() {
-  if (this.filteredPurchases.length === 0) {
-    this.totalPages = 1;
-    this.paginatedPurchases = [];
-    return;
+    if (this.filteredPurchases.length === 0) {
+      this.totalPages = 1;
+      this.paginatedPurchases = [];
+      return;
+    }
+    
+    this.totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
+    
+    // Asegurar que currentPage no sea mayor que totalPages
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedPurchases = this.filteredPurchases.slice(startIndex, endIndex);
   }
-  
-  this.totalPages = Math.ceil(this.filteredPurchases.length / this.itemsPerPage);
-  
-  // Asegurar que currentPage no sea mayor que totalPages
-  if (this.currentPage > this.totalPages) {
-    this.currentPage = this.totalPages;
-  }
-  
-  const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-  const endIndex = startIndex + this.itemsPerPage;
-  this.paginatedPurchases = this.filteredPurchases.slice(startIndex, endIndex);
-}
 
   nextPage() {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
     this.updatePagination();
     // Opcional: scroll al inicio de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
@@ -448,7 +447,6 @@ export class InicioComponent implements OnInit {
     this.currentPage--;
     this.updatePagination();
     // Opcional: scroll al inicio de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 

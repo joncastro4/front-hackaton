@@ -11,6 +11,7 @@
         <label for="firstName">Nombres</label>
         <input 
           formControlName="nombres"
+          placeholder="Ej: Juan Fernando"
         />
         @if (form.controls.nombres.invalid && form.controls.nombres.dirty && form.controls.nombres.touched) {
           <div class="error-msg">
@@ -28,6 +29,7 @@
         <label for="lastName">Apellidos</label>
         <input 
           formControlName="apellidos"
+          placeholder="Ej: Ramirez Villarreal"
         />
         @if (form.controls.apellidos.invalid && form.controls.apellidos.dirty && form.controls.apellidos.touched) {
           <div class="error-msg">
