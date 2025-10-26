@@ -34,4 +34,8 @@ export class AuthService {
   setLocalToken(token: string) {
     this.cookies.set('token', token, 7, '/');
   }
+
+  getUserNessieID(token: string) {
+    return this.http.get(this.authURL + "/me")
+  }
 }

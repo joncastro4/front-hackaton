@@ -5,6 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MerchantService } from '../../../../services/merchant-service';
 import { MessageService } from 'primeng/api';
 import { Purchases } from '../../../../services/purchases';
+import { AuthService } from '../../../../services/auth-service';
 
 @Component({
   selector: 'app-argegar-compra',
@@ -19,7 +20,8 @@ export class ArgegarCompra implements OnInit {
   constructor(
     private merchantService: MerchantService,
     private messageService: MessageService,
-    private purchaseService: Purchases
+    private purchaseService: Purchases,
+    private authService: AuthService
   ) {}
 
   form = new FormGroup({
@@ -29,10 +31,22 @@ export class ArgegarCompra implements OnInit {
     amount: new FormControl("", [Validators.required, Validators.min(0.01)])
   })
 
+  userNessieId: string = ""
+
   ngOnInit(): void {
     this.merchantService.getMerchants().subscribe({
       next: (response: any) => {
         this.mercaderes = response
+      },
+      error: (error: any) => {
+        console.log(error)
+      }
+    })
+
+    this.authService.getUserNessieID(this.authService.getToken()).subscribe({
+      next: (response: any) => {
+        this.userNessieId = response._id
+        console.log(this.userNessieId)
       },
       error: (error: any) => {
         console.log(error)
@@ -53,12 +67,12 @@ export class ArgegarCompra implements OnInit {
         amount: this.form.controls.amount.value
       }
 
-      this.purchaseService.postPurchase("id_cliente_nessie", formData).subscribe({
+      this.purchaseService.postPurchase(this.userNessieId, formData).subscribe({
         next: (response: any) => {
-          
+          console.log(response)
         },
         error: (error: any) => {
-
+          console.log(error)
         }
       })
 
