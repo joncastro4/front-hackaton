@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private cookies: CookieService
+    private cookies: CookieService,
   ) { }
 
   readonly authURL =  BASE_URL + "/auth"
@@ -33,5 +33,21 @@ export class AuthService {
 
   setLocalToken(token: string) {
     this.cookies.set('token', token, 7, '/');
+  }
+
+  isAuthenticated(): boolean {
+    if (this.getToken()) {
+      return true;
+    }
+    this.redirectToLogin();
+    return false;
+  }
+
+  redirectToLogin() {
+    window.location.href = '/iniciar-sesion';
+  }
+  
+  redirectToDashboard() {
+    window.location.href = '/dashboard/inicio';
   }
 }
