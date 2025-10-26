@@ -439,7 +439,7 @@ export class InicioComponent implements OnInit {
     this.currentPage++;
     this.updatePagination();
     // Opcional: scroll al inicio de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
@@ -448,7 +448,7 @@ export class InicioComponent implements OnInit {
     this.currentPage--;
     this.updatePagination();
     // Opcional: scroll al inicio de la tabla
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
