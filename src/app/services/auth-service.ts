@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private cookies: CookieService
+    private cookies: CookieService,
   ) { }
 
   readonly authURL =  BASE_URL + "/auth"
@@ -35,7 +35,24 @@ export class AuthService {
     this.cookies.set('token', token, 7, '/');
   }
 
+<<<<<<< HEAD
   getUserNessieID(token: string) {
     return this.http.get(this.authURL + "/me")
+=======
+  isAuthenticated(): boolean {
+    if (this.getToken()) {
+      return true;
+    }
+    this.redirectToLogin();
+    return false;
+  }
+
+  redirectToLogin() {
+    window.location.href = '/iniciar-sesion';
+  }
+  
+  redirectToDashboard() {
+    window.location.href = '/dashboard/inicio';
+>>>>>>> 62c673e249f2899fa3bb29a756848a3842219e10
   }
 }
