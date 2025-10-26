@@ -41,7 +41,7 @@ export class InicioSesion {
           this.authService.setLocalToken(token)
           this.showAlert("success", "Registro exitoso", "Ahora podra registrar cuentas bancarias.")
           setTimeout(() => {
-            this.router.navigate(['/dashboard/inicio'])
+            this.router.navigate(['/dashboard'])
           }, 3000)
         },
         error: (error: any) => {

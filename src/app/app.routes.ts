@@ -14,12 +14,11 @@ export const routes: Routes = [
     { path: "", component: Landing },
     { path: "iniciar-sesion", component: InicioSesion, canActivate: [logInGuard] },
     { path: "registro", component: Registro, canActivate: [logInGuard] },
-    { path: "crear-cuenta", component: CrearCuenta },
+    { path: "crear-cuenta", component: CrearCuenta, canActivate: [logInGuard] },
     { path: "dashboard", component: Dashboard, children: [
-        { path: "inicio", component: InicioComponent },
-        { path: "compras", component: Compras },
-        {path: "agregar-compra", component: ArgegarCompra }
+        { path: "", component: InicioComponent, canActivate: [authGuard] },
+        { path: "compras", component: Compras, canActivate: [authGuard] },
+        {path: "agregar-compra", component: ArgegarCompra, canActivate: [authGuard] }
     ],
-    canActivate: [authGuard]
     }
 ];

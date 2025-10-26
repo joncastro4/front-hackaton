@@ -13,18 +13,16 @@ export class AuthService {
     private cookies: CookieService,
   ) { }
 
-  readonly authURL =  BASE_URL + "/auth"
-
   register(data: any) {
-    return this.http.post(this.authURL + "/register", data)
+    return this.http.post(`${BASE_URL}/register`, data)
   }
 
   login(data: any) {
-    return this.http.post(this.authURL + "/login", data)
+    return this.http.post(`${BASE_URL}/login`, data)
   }
 
   logOut() {
-    this.cookies.set('token', "")
+    this.cookies.delete('token', );
   }
 
   getToken() {
@@ -35,15 +33,17 @@ export class AuthService {
     this.cookies.set('token', token, 7, '/');
   }
 
-<<<<<<< HEAD
   getUserNessieID(token: string) {
-    return this.http.get(this.authURL + "/me")
-=======
+    return this.http.get(`${BASE_URL}/me`)
+  }
+
   isAuthenticated(): boolean {
-    if (this.getToken()) {
+    const token = this.getToken();
+    console.log("Token en auth service:", token);
+    console.log("Token length:", token.length);
+    if (token.length > 1) {
       return true;
     }
-    this.redirectToLogin();
     return false;
   }
 
@@ -52,7 +52,6 @@ export class AuthService {
   }
   
   redirectToDashboard() {
-    window.location.href = '/dashboard/inicio';
->>>>>>> 62c673e249f2899fa3bb29a756848a3842219e10
+    window.location.href = '/dashboard';
   }
 }

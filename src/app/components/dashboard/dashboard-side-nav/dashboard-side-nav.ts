@@ -25,7 +25,7 @@ export class DashboardSideNav implements OnInit, OnChanges {
 
   items = [
     {
-      routeLink: '/dashboard/inicio',
+      routeLink: '/dashboard',
       icon: '/img/dashboard.png',
       label: 'Dashboard',
     },

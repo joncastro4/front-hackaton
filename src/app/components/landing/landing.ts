@@ -14,9 +14,9 @@ export class Landing implements OnInit {
     private authService: AuthService
   ) { }
 
-  token: string = ""
+  isAuthenticated: boolean = false;
 
   ngOnInit(): void {
-    this.token = this.authService.getToken()
+    this.isAuthenticated = this.authService.isAuthenticated();
   }
 }

@@ -47,11 +47,11 @@ export class Registro {
         email: this.form.controls.correo.value,
         password: this.form.controls.contrasena.value,
         address: {
-          street_number: this.form.controls.numeroCalle.value,
+          street_number: this.form.controls.numeroCalle.value?.toString(),
           street_name: this.form.controls.calle.value,
           city: this.form.controls.ciudad.value,
           state: this.form.controls.estado.value,
-          zip: this.form.controls.zip.value
+          zip: this.form.controls.zip.value?.toString()
         }
       }
 
@@ -61,7 +61,7 @@ export class Registro {
           this.authService.setLocalToken(token)
           this.showAlert("success", "Sesión iniciada", "Redireccionando al panel de cuenta.")
           setTimeout(() => {
-            this.router.navigate(['/dashboard/inicio'])
+            this.router.navigate(['/dashboard'])
           }, 3000)
         },
         error: (error: any) => {
