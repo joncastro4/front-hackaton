@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -17,7 +17,8 @@ export class Registro {
 
   constructor(
     private messageService: MessageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   form = new FormGroup({
@@ -56,7 +57,12 @@ export class Registro {
 
       this.authService.register(formData).subscribe({
         next: (response: any) => {
-          console.log(response)
+          let token = response.token
+          this.authService.setLocalToken(token)
+          this.showAlert("success", "Sesión iniciada", "Redireccionando al panel de cuenta.")
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/inicio'])
+          }, 3000)
         },
         error: (error: any) => {
           this.showAlert("error", "Error al registrarse", "Ha ocurrido un error al momento de registrarse, intente nuevamente en unos minutos.")

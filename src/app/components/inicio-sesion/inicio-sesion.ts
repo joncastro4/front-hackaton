@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
@@ -15,7 +15,8 @@ export class InicioSesion {
 
   constructor(
     private messageService: MessageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   showAlert(severity: string, summary: string, detail: string) {
@@ -34,9 +35,14 @@ export class InicioSesion {
         password: this.form.controls.password.value
       }
 
-      this.authService.login(this.form).subscribe({
+      this.authService.login(formData).subscribe({
         next: (response: any) => {
-          console.log(response)
+          let token = response.token
+          this.authService.setLocalToken(token)
+          this.showAlert("success", "Registro exitoso", "Ahora podra registrar cuentas bancarias.")
+          setTimeout(() => {
+            this.router.navigate(['/dashboard/inicio'])
+          }, 3000)
         },
         error: (error: any) => {
           console.log(error)

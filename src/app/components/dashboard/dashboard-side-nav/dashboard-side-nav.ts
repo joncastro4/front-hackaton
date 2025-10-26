@@ -78,6 +78,7 @@ export class DashboardSideNav implements OnInit, OnChanges {
   }
 
   logout() {
-    
+    this.authService.logOut()
+    this.router.navigate(['/'])
   }
 }
