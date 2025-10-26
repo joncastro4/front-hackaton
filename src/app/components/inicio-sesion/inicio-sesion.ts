@@ -31,7 +31,7 @@ export class InicioSesion {
   iniciarSesion() {
     if (this.form.valid) {
       const formData = {
-        username: this.form.controls.username.value,
+        email: this.form.controls.username.value,
         password: this.form.controls.password.value
       }
 
