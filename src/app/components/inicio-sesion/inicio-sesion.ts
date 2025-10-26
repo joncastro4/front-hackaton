@@ -3,6 +3,7 @@ import { RouterLink } from "@angular/router";
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-inicio-sesion',
@@ -13,7 +14,8 @@ import { ToastModule } from 'primeng/toast';
 export class InicioSesion {
 
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private authService: AuthService
   ) {}
 
   showAlert(severity: string, summary: string, detail: string) {
@@ -32,7 +34,14 @@ export class InicioSesion {
         password: this.form.controls.password.value
       }
 
-      // ENVIAR EL REQUEST AL INICIO DE SESION EN EL API
+      this.authService.login(this.form).subscribe({
+        next: (response: any) => {
+          console.log(response)
+        },
+        error: (error: any) => {
+          console.log(error)
+        }
+      })
 
     } else {
       this.showAlert("error", "Formulario invalido", "Alguno de los campos no estan llenados correctamente")

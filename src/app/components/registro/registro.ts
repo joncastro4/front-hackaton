@@ -4,6 +4,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 import { Password } from 'primeng/password';
+import { AuthService } from '../../services/auth-service';
+import { ConnectedOverlayScrollHandler } from 'primeng/dom';
 
 @Component({
   selector: 'app-registro',
@@ -14,7 +16,8 @@ import { Password } from 'primeng/password';
 export class Registro {
 
   constructor(
-    private messageService: MessageService
+    private messageService: MessageService,
+    private authService: AuthService
   ) {}
 
   form = new FormGroup({
@@ -51,10 +54,15 @@ export class Registro {
         }
       }
 
-      console.log(formData)
-
-      // API
-
+      this.authService.register(formData).subscribe({
+        next: (response: any) => {
+          console.log(response)
+        },
+        error: (error: any) => {
+          this.showAlert("error", "Error al registrarse", "Ha ocurrido un error al momento de registrarse, intente nuevamente en unos minutos.")
+          console.log(error)
+        }
+      })
     } else {
       this.showAlert("error", "Formulario invalido", "Alguno de los campos no estan llenados correctamente")
     }

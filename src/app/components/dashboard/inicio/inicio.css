@@ -435,3 +435,7 @@
   background: #ccc;
   cursor: not-allowed;
 }
+
+.table-section {
+  margin-top: 30px;
+}
